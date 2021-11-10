@@ -9,8 +9,20 @@ module.exports.signup= async (req, res)=>{
     return res.render('signup.ejs');
 }
 
+//checking whether email is valid
+function isValidEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 module.exports.createUser= async (req, res)=>{
     try{
+        //checking email from regex
+        if(isValidEmail(req.body.email)==false){
+            console.log('invalid');
+            return res.redirect('/users/signup');
+        }
+
         // console.log('*********', req.body["checkbox"], '*********');
         let user= await Users.create(req.body);
         // console.log(req.body);
@@ -68,6 +80,9 @@ module.exports.profile= async (req, res)=>{
 module.exports.logout= async (req, res)=>{
     try{
         res.clearCookie("jwt");
+        delete req.token;
+        delete req.user;
+        console.log('++',req.user,'++');
         return res.redirect('/users/login');
     }catch(err){
         console.log(err);
@@ -117,10 +132,9 @@ module.exports.userInfo= async (req, res)=>{
 
 module.exports.update= async (req, res)=>{
     try{
-        let verifyToken= jwt.verify(req.cookies.jwt, "jwt_secret");
-        console.log(verifyToken);
+        let user= await Users.findOne({email: req.token.email});
         return res.render('update.ejs', {
-            user: verifyToken
+            user: user
         });
     }catch(err){
         console.log(err);
