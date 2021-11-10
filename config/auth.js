@@ -4,14 +4,12 @@ const Users= require('../models/users');
 const auth= async (req, res, next)=>{
     try{
         const token= req.cookies.jwt;
-        const verifyToken= jwt.verify(token, "jwt_secret");
-        // console.log(verifyToken);
-        
+        const verify= await jwt.verify(token, "jwt_secret");
         next();
 
     }catch(err){
-        console.log(err);
-        return;
+        // console.log(err);
+        return res.redirect('/users/login');
     }
 }
 
