@@ -2,6 +2,13 @@ const Users = require('../models/users');
 const jwt= require('jsonwebtoken');
 const path= require('path');
 
+module.exports.home= async (req, res)=>{
+    if(req.cookies.jwt){
+        return res.redirect('/users/profile');
+    }
+    return res.render('home.ejs');
+}
+
 module.exports.login= async (req, res)=>{
     return res.render('login.ejs');
 }
