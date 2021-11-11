@@ -48,7 +48,7 @@
     </nav>
 
     <h2>SignUp Form</h2>
-    <form action="/users/createUser" method="POST">
+    <form action="/users/createUser" enctype="multipart/form-data" method="POST">
         <input type="text" name="name" placeholder="Full Name">
         <input type="email" name="email" placeholder="Email">
         <input type="password" name="password" placeholder="Your Password">
@@ -80,7 +80,10 @@
             <option value="3">3</option>
         </select>
 
-        <br>
+        <br><br>
+        <input type="file" name="avatar" placeholder="Profile Picture" required>
+
+        <br><br>
         <input type="submit" value="SignUp">
     </form>
 

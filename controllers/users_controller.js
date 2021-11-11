@@ -1,5 +1,6 @@
 const Users = require('../models/users');
 const jwt= require('jsonwebtoken');
+const path= require('path');
 
 module.exports.login= async (req, res)=>{
     return res.render('login.ejs');
@@ -17,22 +18,33 @@ function isValidEmail(email) {
 
 module.exports.createUser= async (req, res)=>{
     try{
-        //checking email from regex
-        if(isValidEmail(req.body.email)==false){
-            console.log('invalid');
-            return res.redirect('/users/signup');
-        }
 
-        // console.log('*********', req.body["checkbox"], '*********');
-        let user= await Users.create(req.body);
-        // console.log(req.body);
-        if(req.body["checkbox"]=="true"){
-            // console.log('ha');
-            user.checkbox= "on";
-            user.save();
-            
-        }
-        return res.redirect('/users/login');
+        await Users.uploadedAvatar(req, res, async (err)=>{
+
+            console.log(req.body, isValidEmail(req.body.email));
+            //checking email from regex
+            if(isValidEmail(req.body.email)==false){
+                console.log('invalid');
+                return res.redirect('/users/signup');
+            }
+
+            // console.log('*********', req.body["checkbox"], '*********');
+            let user= await Users.create(req.body);
+
+            console.log('***', req.body, '***');
+            if(req.file){
+                user.avatar= Users.avatarPath + '/' + req.file.filename;
+                user.save();
+            }
+            // console.log(req.body);
+            if(req.body["checkbox"]=="true"){
+                // console.log('ha');
+                user.checkbox= "on";
+                user.save();
+                
+            }
+            return res.redirect('/users/login');
+        })
     }catch(err){
         console.log(err);
         return;
@@ -144,22 +156,27 @@ module.exports.update= async (req, res)=>{
 
 module.exports.updateUser= async (req, res)=>{
     try{
-        let verifyToken= jwt.verify(req.cookies.jwt, "jwt_secret");
-        let user= await Users.findOne({email: verifyToken.email});
-        if(user){
-            user.radio= req.body.radio;
-            if(req.body["checkbox"]=="true"){
-                // console.log('ha');
-                user.checkbox= "on";
+        await Users.uploadedAvatar(req, res, async (err)=>{
+            let verifyToken= jwt.verify(req.cookies.jwt, "jwt_secret");
+            let user= await Users.findOne({email: verifyToken.email});
+            if(user){
+                user.radio= req.body.radio;
+                if(req.body["checkbox"]=="true"){
+                    // console.log('ha');
+                    user.checkbox= "on";
+                    user.save();
+                    
+                }
+                user.time= req.body.time;
+                user.number= req.body.number;
+                user.selection= req.body.selection;
+                if(req.file){
+                    user.avatar= Users.avatarPath + '/' + req.file.filename;
+                }
                 user.save();
-                
             }
-            user.time= req.body.time;
-            user.number= req.body.number;
-            user.selection= req.body.selection;
-            user.save();
-        }
-        return res.redirect('/users/logout');
+            return res.redirect('/users/logout');
+        })
     }catch(err){
         console.log(err);
         return;

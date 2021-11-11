@@ -61,7 +61,7 @@
     </nav>
 
     <h1>Update</h1>
-    <form action="/users/updateUser" method="POST">
+    <form action="/users/updateUser" enctype="multipart/form-data" method="POST">
 
         <br>
         <p>Please select your radio option:</p>
@@ -105,6 +105,9 @@
             <% } %>
         <% } %>
         </select>
+
+        <p>Current avatar- <img src="<%=user.avatar%>" alt=""></p>
+        <input type="file" name="avatar" placeholder="Profile Picture">
 
         <br><br>
         <input type="submit" value="Update">
