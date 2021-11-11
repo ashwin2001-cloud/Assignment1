@@ -37,7 +37,7 @@ const userSchema= new mongoose.Schema({
     "selection": {
         type: String,
         enum : ['1','2','3'],
-        default: 'NEW'
+        default: '1'
     },
     "avatar": {
         type: String

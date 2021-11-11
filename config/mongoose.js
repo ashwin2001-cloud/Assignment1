@@ -1,5 +1,12 @@
 const mongoose= require('mongoose');
-mongoose.connect('mongodb://localhost/users_db');
+const env= require('./environment');
+
+mongoose.connect(`mongodb+srv://${env.mongo_username}:${env.password}@cluster0.eiwh0.mongodb.net/${env.db}?retryWrites=true&w=majority`, {
+    useUnifiedTopology:true,
+    useNewUrlParser:true
+})
+.then(()=> console.log('MongoDB connected....'))
+.catch((err) => console.log(err));
 
 const db= mongoose.connection;
 
