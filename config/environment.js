@@ -1,10 +1,3 @@
-const development= {
-    name: 'development',
-    db: 'cloudify1',
-    mongo_username: 'cloudify',
-    password: 'First_assignment'
-}
-
 const production= {
     name: process.env.ENV,
     db: process.env.CLOUDIFY_DB,
@@ -12,4 +5,4 @@ const production= {
     password: process.env.CLOUDIFY_PASSWORD
 }
 
-module.exports= development;
+module.exports= production;
